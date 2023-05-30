@@ -1,0 +1,8 @@
+".\Objects\main.obj",
+".\Objects\lcd12864.obj",
+".\Objects\key.obj",
+".\Objects\DS1302.obj",
+".\Objects\jq8900.obj",
+".\Objects\dht11.obj" 
+TO ".\Objects\Calendar" 
+PRINT(".\Listings\Calendar.m51") RAMSIZE(256) 

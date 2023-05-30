@@ -1,0 +1,238 @@
+C51 COMPILER V9.54   LCD12864                                                              05/23/2023 15:57:19 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE LCD12864
+OBJECT MODULE PLACED IN .\Objects\lcd12864.obj
+COMPILER INVOKED BY: D:\keli5\C51\BIN\C51.EXE lcd12864.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\lc
+                    -d12864.lst) OBJECT(.\Objects\lcd12864.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <string.h>
+   3          
+   4          // LCD 控制引脚
+   5          sbit RS = P2^4;    // RS 连接到 P24
+   6          sbit RW = P2^5;    // RW 连接到 P25
+   7          sbit E = P2^6;     // E 连接到 P26
+   8          sbit REST = P2^7;  // REST 连接到 P27
+   9          
+  10          // LCD 数据引脚
+  11          sbit DB0 = P0^7;   // DB0 连接到 P07
+  12          sbit DB1 = P0^6;   // DB1 连接到 P06
+  13          sbit DB2 = P0^5;   // DB2 连接到 P05
+  14          sbit DB3 = P0^4;   // DB3 连接到 P04
+  15          sbit DB4 = P0^3;   // DB4 连接到 P03
+  16          sbit DB5 = P0^2;   // DB5 连接到 P02
+  17          sbit DB6 = P0^1;   // DB6 连接到 P01
+  18          sbit DB7 = P0^0;   // DB7 连接到 P00
+  19          
+  20          // 函数声明
+  21          void Delay5Ms();
+  22          void Delay_ms(unsigned int milliseconds);
+  23          void Lcd_Init();
+  24          void Wr_Command(unsigned char wrcommand, unsigned char busyc);
+  25          void Wr_Data(unsigned char wrdata);
+  26          void RDbf();
+  27          void LCD_ShowString(unsigned char line, unsigned char *string);
+  28          void LCD_ShowNum(unsigned char line, unsigned char x, unsigned int num, unsigned char length);
+  29          
+  30          // 延迟5毫秒
+  31          void Delay5Ms()
+  32          {
+  33   1          unsigned char i, j;
+  34   1          i = 54;
+  35   1          j = 199;
+  36   1          do
+  37   1          {
+  38   2              while (--j);
+  39   2          } while (--i);
+  40   1      }
+  41          
+  42          // 延迟指定的毫秒数
+  43          void Delay_ms(unsigned int milliseconds)
+  44          {
+  45   1          unsigned int i, j;
+  46   1          for (i = 0; i < milliseconds; i++)
+  47   1          {
+  48   2              for (j = 0; j < 12000; j++)
+  49   2              {
+  50   3                  // 空循环以消耗时间
+  51   3              }
+  52   2          }
+  53   1      }
+  54          
+C51 COMPILER V9.54   LCD12864                                                              05/23/2023 15:57:19 PAGE 2   
+
+  55          // LCD 初始化
+  56          void Lcd_Init(void)
+  57          {
+  58   1          Delay5Ms();
+  59   1          REST = 1;
+  60   1          REST = 0;
+  61   1          REST = 1;
+  62   1          Wr_Command(0x30, 0);
+  63   1          Delay5Ms();
+  64   1          Wr_Command(0x30, 0);
+  65   1          Delay5Ms();
+  66   1          Wr_Command(0x0C, 1);
+  67   1          Delay5Ms();
+  68   1          Wr_Command(0x01, 1);
+  69   1          Delay5Ms();
+  70   1          Delay5Ms();
+  71   1          Wr_Command(0x06, 1);
+  72   1          Delay5Ms();
+  73   1      }
+  74          
+  75          // 发送指令到 LCD
+  76          void Wr_Command(unsigned char wrcommand, unsigned char busyc)
+  77          {
+  78   1          if (busyc)
+  79   1              RDbf();
+  80   1          RS = 0;
+  81   1          RW = 0;
+  82   1          E = 1;
+  83   1          DB7 = wrcommand & 0x80;
+  84   1          DB6 = wrcommand & 0x40;
+  85   1          DB5 = wrcommand & 0x20;
+  86   1          DB4 = wrcommand & 0x10;
+  87   1          DB3 = wrcommand & 0x08;
+  88   1          DB2 = wrcommand & 0x04;
+  89   1          DB1 = wrcommand & 0x02;
+  90   1          DB0 = wrcommand & 0x01;
+  91   1          E = 0;
+  92   1      }
+  93          
+  94          // 向 LCD 写入数据
+  95          void Wr_Data(unsigned char wrdata)
+  96          {
+  97   1          RDbf();
+  98   1          RS = 1;
+  99   1          RW = 0;
+ 100   1          E = 1;
+ 101   1          DB7 = wrdata & 0x80;
+ 102   1          DB6 = wrdata & 0x40;
+ 103   1          DB5 = wrdata & 0x20;
+ 104   1          DB4 = wrdata & 0x10;
+ 105   1          DB3 = wrdata & 0x08;
+ 106   1          DB2 = wrdata & 0x04;
+ 107   1          DB1 = wrdata & 0x02;
+ 108   1          DB0 = wrdata & 0x01;
+ 109   1          E = 0;
+ 110   1      }
+ 111          
+ 112          // 读取忙标志位
+ 113          void RDbf(void)
+ 114          {
+ 115   1          while (1)
+ 116   1          {
+C51 COMPILER V9.54   LCD12864                                                              05/23/2023 15:57:19 PAGE 3   
+
+ 117   2              RS = 0;
+ 118   2              RW = 1;
+ 119   2              E = 0;
+ 120   2              E = 1;
+ 121   2              if ((P0 & 0x01) == 0)
+ 122   2                  break;
+ 123   2          }
+ 124   1      }
+ 125          
+ 126          // 在 LCD 上显示字符串
+ 127          void LCD_ShowString(unsigned char line, unsigned char *string)
+ 128          {
+ 129   1          unsigned char addr, i;
+ 130   1          switch (line)
+ 131   1          {
+ 132   2              case 1:
+ 133   2                  addr = 0x80;
+ 134   2                  break;
+ 135   2              case 2:
+ 136   2                  addr = 0x90;
+ 137   2                  break;
+ 138   2              case 3:
+ 139   2                  addr = 0x88;
+ 140   2                  break;
+ 141   2              case 4:
+ 142   2                  addr = 0x98;
+ 143   2                  break;
+ 144   2          }
+ 145   1          Wr_Command(addr, 1);
+ 146   1          for (i = 0; i < 16; i++)
+ 147   1          {
+ 148   2              if (*string)
+ 149   2                  Wr_Data(*string++);
+ 150   2              else
+ 151   2                  Wr_Data(' ');
+ 152   2          }
+ 153   1      }
+ 154          
+ 155          // 在 LCD 上显示数字
+ 156          void LCD_ShowNum(unsigned char line, unsigned char x, unsigned int num, unsigned char length)
+ 157          {
+ 158   1          unsigned char str[6] = "     ";
+ 159   1          unsigned char i = 0;
+ 160   1          
+ 161   1          // 从高位开始存储数字
+ 162   1          while (num > 0)
+ 163   1          {
+ 164   2              str[length - 1 - i] = num % 10 + '0';
+ 165   2              num /= 10;
+ 166   2              i++;
+ 167   2          }
+ 168   1          
+ 169   1          if (length > 0 && length <= 5)
+ 170   1          {
+ 171   2              while (i < length)
+ 172   2              {
+ 173   3                  str[length - 1 - i] = ' ';
+ 174   3                  i++;
+ 175   3              }
+ 176   2          }
+ 177   1          
+ 178   1          str[length] = '\0';
+C51 COMPILER V9.54   LCD12864                                                              05/23/2023 15:57:19 PAGE 4   
+
+ 179   1          LCD_ShowString(line, str);
+ 180   1      }
+*** WARNING C280 IN LINE 156 OF lcd12864.c: 'x': unreferenced local variable
+ 181          
+ 182          
+ 183          
+ 184          // 在 LCD 上显示单个字符
+ 185          void LCD_ShowChar(unsigned char line, unsigned char position, unsigned char character)
+ 186          {
+ 187   1          unsigned char addr;
+ 188   1          switch (line)
+ 189   1          {
+ 190   2              case 1:
+ 191   2                  addr = 0x80 + position - 1;
+ 192   2                  break;
+ 193   2              case 2:
+ 194   2                  addr = 0x90 + position - 1;
+ 195   2                  break;
+ 196   2              case 3:
+ 197   2                  addr = 0x88 + position - 1;
+ 198   2                  break;
+ 199   2              case 4:
+ 200   2                  addr = 0x98 + position - 1;
+ 201   2                  break;
+ 202   2              default:
+ 203   2                  return;  // 如果行数不在范围内，则不显示字符
+ 204   2          }
+ 205   1          Wr_Command(addr, 1);
+ 206   1          Wr_Data(character);
+ 207   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    506    ----
+   CONSTANT SIZE    =      6    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      21
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
