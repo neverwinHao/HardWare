@@ -230,7 +230,7 @@
               <RCB>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0xffff</Size>
               </RCB>
               <RXB>
                 <Type>0</Type>
@@ -301,7 +301,7 @@
             <uAregs>0</uAregs>
             <UseInterruptVector>1</UseInterruptVector>
             <Fuzzy>3</Fuzzy>
-            <Optimize>8</Optimize>
+            <Optimize>9</Optimize>
             <WarningLevel>2</WarningLevel>
             <SizeSpeed>1</SizeSpeed>
             <ObjectExtend>1</ObjectExtend>
@@ -409,14 +409,34 @@
               <FilePath>.\jq8900.h</FilePath>
             </File>
             <File>
+              <FileName>dht11.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\dht11.h</FilePath>
+            </File>
+            <File>
               <FileName>dht11.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\dht11.c</FilePath>
             </File>
             <File>
-              <FileName>dht11.h</FileName>
+              <FileName>lunar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lunar.c</FilePath>
+            </File>
+            <File>
+              <FileName>lunar.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\dht11.h</FilePath>
+              <FilePath>.\lunar.h</FilePath>
+            </File>
+            <File>
+              <FileName>lunarword.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lunarword.c</FilePath>
+            </File>
+            <File>
+              <FileName>lunarword.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lunarword.h</FilePath>
             </File>
           </Files>
         </Group>

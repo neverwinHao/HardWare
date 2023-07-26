@@ -1,9 +1,9 @@
-C51 COMPILER V9.54   KEY                                                                   05/23/2023 15:57:19 PAGE 1   
+C51 COMPILER V9.54   KEY                                                                   07/04/2023 12:50:34 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE KEY
 OBJECT MODULE PLACED IN .\Objects\key.obj
-COMPILER INVOKED BY: D:\keli5\C51\BIN\C51.EXE key.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\key.lst
+COMPILER INVOKED BY: D:\keli5\C51\BIN\C51.EXE key.c OPTIMIZE(9,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\key.lst
                     -) OBJECT(.\Objects\key.obj)
 
 line level    source
@@ -62,7 +62,7 @@ line level    source
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =     83    ----
-C51 COMPILER V9.54   KEY                                                                   05/23/2023 15:57:19 PAGE 2   
+C51 COMPILER V9.54   KEY                                                                   07/04/2023 12:50:34 PAGE 2   
 
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----

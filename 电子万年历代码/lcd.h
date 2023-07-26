@@ -20,14 +20,17 @@ sbit DB5 = P0^2;   // DB5 连接到 P02
 sbit DB6 = P0^1;   // DB6 连接到 P01
 sbit DB7 = P0^0;   // DB7 连接到 P00
 
+
 // 函数声明
 void Delay5Ms();
 void Delay_ms(unsigned int milliseconds);
 void Lcd_Init();
-void Wr_Command(unsigned char wrcommand, unsigned char busyc);
+void LCD_WriteCommand(unsigned char wrcommand, unsigned char busyc);
 void Wr_Data(unsigned char wrdata);
 void RDbf();
 void LCD_ShowString(unsigned char line, unsigned char *string);
 void LCD_ShowNum(unsigned char line, unsigned char x, unsigned int num, unsigned char length);
-
+void LCD_SetCursor(unsigned char line, unsigned char pos);
+void LCD_ClearScreen();
+void LCD_ShowChar(unsigned char line, unsigned char pos, unsigned char* str);
 #endif  // LCD_H

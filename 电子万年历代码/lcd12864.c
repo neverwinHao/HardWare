@@ -1,5 +1,6 @@
 #include <reg52.h>
 #include <string.h>
+#include "lunarword.h"
 
 // LCD 控制引脚
 sbit RS = P2^4;    // RS 连接到 P24
@@ -21,11 +22,13 @@ sbit DB7 = P0^0;   // DB7 连接到 P00
 void Delay5Ms();
 void Delay_ms(unsigned int milliseconds);
 void Lcd_Init();
-void Wr_Command(unsigned char wrcommand, unsigned char busyc);
+void LCD_WriteCommand(unsigned char wrcommand, unsigned char busyc);
 void Wr_Data(unsigned char wrdata);
 void RDbf();
 void LCD_ShowString(unsigned char line, unsigned char *string);
+void LCD_ShowChar(unsigned char line, unsigned char pos, unsigned char* str);
 void LCD_ShowNum(unsigned char line, unsigned char x, unsigned int num, unsigned char length);
+void LCD_SetCursor(unsigned char line, unsigned char pos);
 
 // 延迟5毫秒
 void Delay5Ms()
@@ -59,21 +62,21 @@ void Lcd_Init(void)
     REST = 1;
     REST = 0;
     REST = 1;
-    Wr_Command(0x30, 0);
+    LCD_WriteCommand(0x30, 0);
     Delay5Ms();
-    Wr_Command(0x30, 0);
+    LCD_WriteCommand(0x30, 0);
     Delay5Ms();
-    Wr_Command(0x0C, 1);
+    LCD_WriteCommand(0x0C, 1);
     Delay5Ms();
-    Wr_Command(0x01, 1);
+    LCD_WriteCommand(0x01, 1);
     Delay5Ms();
     Delay5Ms();
-    Wr_Command(0x06, 1);
+    LCD_WriteCommand(0x06, 1);
     Delay5Ms();
 }
 
-// 发送指令到 LCD
-void Wr_Command(unsigned char wrcommand, unsigned char busyc)
+// 发送指令到 LCD LCD_WriteCommand
+void LCD_WriteCommand(unsigned char wrcommand, unsigned char busyc)
 {
     if (busyc)
         RDbf();
@@ -142,7 +145,7 @@ void LCD_ShowString(unsigned char line, unsigned char *string)
             addr = 0x98;
             break;
     }
-    Wr_Command(addr, 1);
+    LCD_WriteCommand(addr, 1);
     for (i = 0; i < 16; i++)
     {
         if (*string)
@@ -157,51 +160,100 @@ void LCD_ShowNum(unsigned char line, unsigned char x, unsigned int num, unsigned
 {
     unsigned char str[6] = "     ";
     unsigned char i = 0;
-    
+    unsigned int temp = num;  // 保存原始数字
+
     // 从高位开始存储数字
-    while (num > 0)
+    while (temp > 0)
     {
-        str[length - 1 - i] = num % 10 + '0';
-        num /= 10;
+        str[length - 1 - i] = temp % 10 + '0';
+        temp /= 10;
         i++;
     }
-    
-    if (length > 0 && length <= 5)
+
+    // 在位数小于输入位数时，在数字前补零
+    while (i < length)
     {
-        while (i < length)
-        {
-            str[length - 1 - i] = ' ';
-            i++;
-        }
+        str[length - 1 - i] = '0';
+        i++;
     }
-    
+
     str[length] = '\0';
-    LCD_ShowString(line, str);
+
+    LCD_SetCursor(line, x);  // 设置光标位置
+
+    for (i = 0; i < length; i++)
+    {
+        Wr_Data(str[i]);
+    }
 }
 
 
 
-// 在 LCD 上显示单个字符
-void LCD_ShowChar(unsigned char line, unsigned char position, unsigned char character)
+
+// LCD 设置光标位置
+void LCD_SetCursor(unsigned char line, unsigned char pos)
 {
     unsigned char addr;
     switch (line)
     {
         case 1:
-            addr = 0x80 + position - 1;
+            addr = 0x80 + pos - 1;
             break;
         case 2:
-            addr = 0x90 + position - 1;
+            addr = 0x90 + pos - 1;
             break;
         case 3:
-            addr = 0x88 + position - 1;
+            addr = 0x88 + pos - 1;
             break;
         case 4:
-            addr = 0x98 + position - 1;
+            addr = 0x98 + pos - 1;
             break;
         default:
-            return;  // 如果行数不在范围内，则不显示字符
+            return; // 非法行数，直接返回
     }
-    Wr_Command(addr, 1);
-    Wr_Data(character);
+    LCD_WriteCommand(addr, 1);
 }
+
+
+void LCD_ClearScreen()
+{
+	LCD_ShowString(1,"                 ");
+	LCD_ShowString(2,"                 ");
+	LCD_ShowString(3,"                 ");
+	LCD_ShowString(4,"                 ");
+}
+
+// 在 LCD 上显示字符
+void LCD_ShowChar(unsigned char line, unsigned char pos, unsigned char* str)
+{
+    unsigned char addr;
+    unsigned char i = 0;
+    switch (line)
+    {
+        case 1:
+            addr = 0x80 + pos - 1;
+            break;
+        case 2:
+            addr = 0x90 + pos - 1;
+            break;
+        case 3:
+            addr = 0x88 + pos - 1;
+            break;
+        case 4:
+            addr = 0x98 + pos - 1;
+            break;
+        default:
+            return; // 非法行数，直接返回
+    }
+    LCD_WriteCommand(addr, 1);
+    
+    // 先写入指定位置的字符
+    while (*str && i < 16 - pos)
+    {
+        Wr_Data(*str++);
+        i++;
+    }
+	Delay_ms(2);
+}
+
+

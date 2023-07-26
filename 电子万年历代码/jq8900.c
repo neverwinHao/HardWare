@@ -3,7 +3,6 @@
 sbit sda = P1 ^ 0;
 
 uchar key_scan();
-uchar song;
 
 // ÑÓÊ±×Óº¯Êý
 void Delay1500us()		//@11.0592MHz

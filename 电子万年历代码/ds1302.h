@@ -31,17 +31,18 @@ typedef struct time
     uchar times[9];
 } TIME;
 
-typedef struct alarm
+typedef struct clocktime
 {
     char min;
     char hour;
-} ALARM;
+} CLOCKTIME;
+
 
 void Ds1302Write(uchar addr, uchar dat);
 uchar Ds1302Read(uchar addr);
 void Ds1302Init();
 void read_time(uchar *timedata);
-void turninto(TIME *timedata);
+void TimeToChar(TIME *timedata, uchar pmFlag);
 void set_time(uchar *timedata);
 
 #endif

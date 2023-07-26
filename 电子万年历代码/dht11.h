@@ -1,19 +1,22 @@
-#ifndef DHT11_H
-#define DHT11_H
+#ifndef _DTH11_H_
+#define _DTH11_H_
 
-#include <reg52.h>
-#include <intrins.h>
+#include<reg52.h>
 
+#ifndef uchar
 #define uchar unsigned char
+#endif
+
+#ifndef uint 
 #define uint unsigned int
+#endif
+sbit Data = P1^5;
 
-extern uchar rec_dat[16];  // 声明外部静态数组
 
-void DHT11_delay_us(uchar n);
-void DHT11_delay_ms(uint z);
-void Delay30us();
-void DHT11_start();
-uchar DHT11_rec_byte();
-uchar* DHT11_receive();
+typedef struct dht
+{	uchar wendu;
+	uchar shidu;
+}DHT;
 
-#endif // DHT11_H
+void TemHum(uchar *sensordata);
+#endif 

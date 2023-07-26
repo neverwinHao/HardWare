@@ -3,6 +3,8 @@
 ".\Objects\key.obj",
 ".\Objects\DS1302.obj",
 ".\Objects\jq8900.obj",
-".\Objects\dht11.obj" 
+".\Objects\dht11.obj",
+".\Objects\lunar.obj",
+".\Objects\lunarword.obj" 
 TO ".\Objects\Calendar" 
 PRINT(".\Listings\Calendar.m51") RAMSIZE(256) 
