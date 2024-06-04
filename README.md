@@ -5,7 +5,7 @@
 
 # 实物图：
 
-![overview](F:\Users\liu'hao\Desktop\HardWare\img\overview.jpg)
+![overview](https://github.com/neverwinHao/HardWare/blob/main/img/overview.jpg)
 
 # 项目要求：
 
@@ -34,9 +34,9 @@
 
 ## 原理图
 
-![yuanlitu](F:\Users\liu'hao\Desktop\HardWare\img\yuanlitu.png)
+![yuanlitu](https://github.com/neverwinHao/HardWare/blob/main/img/yuanlitu.png)
 
 ## PCB
 
-![pcb](F:\Users\liu'hao\Desktop\HardWare\img\pcb.jpg)
+![pcb](https://github.com/neverwinHao/HardWare/blob/main/img/pcb.jpg)
 
